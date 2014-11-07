@@ -3,10 +3,10 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib"
 
 require 'github/markup'
-require 'test/unit'
+require 'minitest/autorun'
 
-class MarkupTest < Test::Unit::TestCase
-  Dir['test/markups/README.*'].each do |readme|
+class MarkupTest < Minitest::Test
+  Dir['test/markups/README*.*'].each do |readme|
     next if readme =~ /html$/
     markup = readme.split('/').last.gsub(/^README\./, '')
 
