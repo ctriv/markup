@@ -1,9 +1,4 @@
-if RUBY_PLATFORM == 'java' 
-  require "open3"
-else
-  require "posix-spawn"
-end
-
+require RUBY_PLATFORM == "java" ? "open3" : "posix-spawn"
 require "github/markup/implementation"
 
 module GitHub
@@ -36,19 +31,18 @@ module GitHub
           rendered
         end
       end
-      
-      if RUBY_PLATFORM == 'java'
+
+      if RUBY_PLATFORM == "java"
         def execute(command, target)
-          output = Open3.popen3(*command) do |stdin, stdout, stderr, wait_thr|
+          Open3.popen3(*command) do |stdin, stdout, stderr, wait_thr|
             stdin.puts target
             stdin.close
             if wait_thr.value.success?
-              stdout.readlines
+              sanitize(stdout.readlines.join(''), target.encoding)
             else
               raise CommandError.new(stderr.readlines.join('').strip)
             end
           end
-          sanitize(output.join(''), target.encoding)
         end
       else
         def execute(command, target)
@@ -60,11 +54,11 @@ module GitHub
           end
         end
       end
-      
+
       def sanitize(input, encoding)
         input.gsub("\r", '').force_encoding(encoding)
       end
-      
+
     end
   end
 end
