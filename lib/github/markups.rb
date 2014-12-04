@@ -37,7 +37,7 @@ command("python2 -S #{Shellwords.escape(File.dirname(__FILE__))}/commands/rest2h
 #
 # Any block passed to `command` will be handed the command's STDOUT for
 # post processing.
-command('/usr/bin/env perl -MPod::Simple::HTML -e Pod::Simple::HTML::go', /pod/) do |rendered|
+command("/usr/bin/env perl -MPod::Simple::HTML -e '$Pod::Simple::HTML::Perldoc_URL_Prefix = q[https://metacpan.org/pod/]; Pod::Simple::HTML::go()'", /pod/) do |rendered|
   if rendered =~ /<!-- start doc -->\s*(.+)\s*<!-- end doc -->/mi
     $1
   end
